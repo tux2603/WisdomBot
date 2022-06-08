@@ -60,7 +60,7 @@ class Wisdoms(commands.Cog):
         # Check if the lower case message content is in 
         if message.content.lower() in self.wisdom_strings:
             # users aren't allowed to request wisdom more than once every five minutes
-            if message.author.id not in self.user_last_request or (message.created_at - self.user_last_request[message.author.id]).seconds > 120:
+            if message.author.id not in self.user_last_request or (message.created_at - self.user_last_request[message.author.id]).seconds > 300:
                 if message.author.id not in self.user_thanked or self.user_thanked[message.author.id]:
                     self.user_thanked[message.author.id] = False
                     self.user_last_request[message.author.id] = message.created_at
