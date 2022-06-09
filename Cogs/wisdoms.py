@@ -17,6 +17,7 @@ class Wisdoms(commands.Cog):
         
         self.wisdom_request = re.compile(r'oh great one, please respond to message (\d+) with your wisdom', re.IGNORECASE)
         self.custom_request = re.compile(r'oh great one, please respond to message (\d+) with (.*)', re.IGNORECASE)
+        self.channel_request = re.compile(r'oh great one, please send a message to channel (\d+) with (.*)', re.IGNORECASE)
 
         self.patience_proverbs = [
             'Patience is the companion of wisdom.',
@@ -134,3 +135,18 @@ class Wisdoms(commands.Cog):
                 await message.reply(f'I couldn\'t find that message, young {message.author.mention}')
             else:
                 await message.reply(f'It is done, young {message.author.mention}.')
+
+        elif match := self.channel_request.match(message.content):
+            # get the channel id from the match
+            channel_id = match.group(1)
+
+            # get the custom message from the match
+            custom_message = match.group(2)
+
+            # get the channel from the id
+            if channel := self.bot.get_channel(int(channel_id)):
+                await channel.send(custom_message)
+                await message.reply(f'It is done, young {message.author.mention}.')
+            else:
+                await message.reply(f'I couldn\'t find that channel, young {message.author.mention}')
+            
