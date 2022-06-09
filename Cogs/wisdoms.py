@@ -141,11 +141,8 @@ class Wisdoms(commands.Cog):
             # get the channel id from the match
             channel_id = match.group(1)
 
-            await message.channel.send(f'I will try to find that channel for you, young {message.author.mention}')
-            channel_found = False
-
             # get the channel from the id
-            if channel := self.bot.get_channel(channel_id):
+            if channel := self.bot.get_channel(int(channel_id)):
                 wisdom = inspirobot.generate()
                 await channel.send(wisdom.url)
                 await message.reply(f'It is done, young {message.author.mention}.')
