@@ -17,6 +17,7 @@ class Wisdoms(commands.Cog):
         
         self.wisdom_request = re.compile(r'oh great one, please respond to message (\d+) with your wisdom', re.IGNORECASE)
         self.custom_request = re.compile(r'oh great one, please respond to message (\d+) with (.*)', re.IGNORECASE)
+        self.channel_wisdom_request = re.compile(r'oh great one, please send your wisdom to channel (\d+)', re.IGNORECASE)
         self.channel_request = re.compile(r'oh great one, please send a message to channel (\d+) with (.*)', re.IGNORECASE)
 
         self.patience_proverbs = [
@@ -135,6 +136,21 @@ class Wisdoms(commands.Cog):
                 await message.reply(f'I couldn\'t find that message, young {message.author.mention}')
             else:
                 await message.reply(f'It is done, young {message.author.mention}.')
+
+        elif match := self.channel_wisdom_request.match(message.content):
+            # get the channel id from the match
+            channel_id = match.group(1)
+
+            await message.channel.send(f'I will try to find that channel for you, young {message.author.mention}')
+            channel_found = False
+
+            # get the channel from the id
+            if channel := self.bot.get_channel(channel_id):
+                wisdom = inspirobot.generate()
+                await channel.send(wisdom.url)
+                await message.reply(f'It is done, young {message.author.mention}.')
+            else:
+                await message.reply(f'I couldn\'t find that channel, young {message.author.mention}')
 
         elif match := self.channel_request.match(message.content):
             # get the channel id from the match
