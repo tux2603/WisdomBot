@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from discord.ext import commands
 import inspirobot
+import re
 from random import choice
 
 
@@ -13,6 +14,9 @@ class Wisdoms(commands.Cog):
         self.bot = bot
         self.wisdom_strings = ['share your wisdom great one', 'what is your wisdom great one']
         self.wisdom_thanks = ['thank you for your wisdom, oh great one', 'thank you great one']
+        
+        self.wisdom_request = re.compile(r'oh great one, please respond to message (\d+) with your wisdom', re.IGNORECASE)
+        self.custom_request = re.compile(r'oh great one, please respond to message (\d+) with your message (.*)', re.IGNORECASE)
 
         self.patience_proverbs = [
             'Patience is the companion of wisdom.',
@@ -73,10 +77,60 @@ class Wisdoms(commands.Cog):
                 proverb = choice(self.patience_proverbs)
                 await message.reply(f'Have patience, young {message.author.mention}. A wise, ancient proverb says "{proverb}"')
 
-        if message.content.lower() in self.wisdom_thanks:
+        elif message.content.lower() in self.wisdom_thanks:
             self.user_thanked[message.author.id] = True
             
             # add "n" and "p" regional characters to the message followed by a kissing winky face
             await message.add_reaction('🇳')
             await message.add_reaction('🇵')
             await message.add_reaction('😘')
+
+        elif match := self.wisdom_request.match(message.content):
+            # get the message id from the match
+            message_id = match.group(1)
+
+            await message.channel.send(f'I will try to find that message for you, young {message.author.mention}')
+            message_found = False
+
+            # Iterate over every channel in every server to try and find the message
+            for server in self.bot.guilds:
+                for channel in server.channels:
+                    try:
+                        other_message = await channel.fetch_message(message_id)
+                        wisdom = inspirobot.generate()
+                        await other_message.reply(wisdom.url)
+                        message_found = True
+                        break
+                    except Exception:
+                        continue
+
+            if not message_found:
+                await message.reply(f'I couldn\'t find that message, young {message.author.mention}')
+            else:
+                await message.reply(f'It is done, young {message.author.mention}.')
+
+        elif match := self.custom_request.match(message.content):
+            # get the message id from the match
+            message_id = match.group(1)
+
+            # get the custom message from the match
+            custom_message = match.group(2)
+
+            await message.channel.send(f'I will try to find that message for you, young {message.author.mention}')
+            message_found = False
+
+            # Iterate over every channel in every server to try and find the message
+            for server in self.bot.guilds:
+                for channel in server.channels:
+                    try:
+                        other_message = await channel.fetch_message(message_id)
+                        await other_message.reply(custom_message)
+                        message_found = True
+                        break
+                    except Exception:
+                        continue
+
+            if not message_found:
+                await message.reply(f'I couldn\'t find that message, young {message.author.mention}')
+            else:
+                await message.reply(f'It is done, young {message.author.mention}.')
