@@ -16,7 +16,7 @@ class Wisdoms(commands.Cog):
         self.wisdom_thanks = ['thank you for your wisdom, oh great one', 'thank you great one']
         
         self.wisdom_request = re.compile(r'oh great one, please respond to message (\d+) with your wisdom', re.IGNORECASE)
-        self.custom_request = re.compile(r'oh great one, please respond to message (\d+) with your message (.*)', re.IGNORECASE)
+        self.custom_request = re.compile(r'oh great one, please respond to message (\d+) with (.*)', re.IGNORECASE)
 
         self.patience_proverbs = [
             'Patience is the companion of wisdom.',
