@@ -88,20 +88,17 @@ class GameNights(commands.Cog):
 
     @commands.Cog.listener()
     async def on_button_click(self, res):
-        print(res)
-        print(f'{res.user.name} voted for {res.component.label}')
         with open('voting.yml', 'r') as f:
             votes = yaml.load(f, Loader=yaml.FullLoader)
         
         if res.user.id not in votes[res.component.label]:
             votes[res.component.label].append(res.user.id)
-            await res.respond(content=f'I will remember your vote for {res.component.label}', ephemeral=True)
+            await res.respond(content=f'I will remember your vote for {res.component.label}')
 
         else:
             # send a message to the channel saying that the user has already voted
             proverb = choice(self.cheating_proverbs)
-            await self.bot.get_channel(res.channel_id).send(f'You have already voted for that game young {res.user.mention}! A wise, ancient proverb says "{proverb}"')
-            await res.respond(content='I am watching you', ephemeral=True, tts=True)
+            await res.respond(content=f'You have already voted for that game young {res.user.mention}! A wise, ancient proverb says "{proverb}"', tts=True)
 
         with open('voting.yml', 'w') as f:
             yaml.dump(votes, f)
