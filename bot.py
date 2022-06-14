@@ -3,6 +3,7 @@ import os
 
 import discord
 from discord.ext import commands
+from discord_components import DiscordComponents
 from dotenv import load_dotenv
 from Cogs import *
 
@@ -15,6 +16,8 @@ bot = commands.Bot(command_prefix='ඞ')
 @bot.event
 async def on_ready():
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
+
+    DiscordComponents(bot)
 
 
 if __name__ == '__main__':
