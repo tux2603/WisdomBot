@@ -10,25 +10,25 @@ import asyncio
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-client = commands.Bot(intents=discord.Intents.all(), command_prefix='ඞ')
+bot = commands.Bot(intents=discord.Intents.all(), command_prefix='ඞ')
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f'\n\nLogged in as: {client.user.name} - {client.user.id}\nVersion: {discord.__version__}\n')
+    print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over the world from my sanctuary in the clouds"))
 
 async def main():
-    async with client:
+    async with bot:
         for file in os.listdir('Cogs'):
             if not file.startswith('__') and file.endswith('.py'):
                 try:
                     print(f'Loading extension {file[:-3]}')
-                    await client.load_extension(f'Cogs.{file[:-3]}')
+                    await bot.load_extension(f'Cogs.{file[:-3]}')
                     print('  ...Done')
                 except commands.errors.NoEntryPointError:
                     print(f'  ...Failed to load extension {file[:-3]}')
-
-        await client.start(TOKEN)
+        await bot.start(TOKEN)
 
 if __name__ == '__main__':
     print('Starting bot')
