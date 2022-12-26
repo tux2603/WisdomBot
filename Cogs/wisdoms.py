@@ -5,8 +5,8 @@ import re
 from random import choice
 
 
-def setup(bot):
-    bot.add_cog(Wisdoms(bot))
+async def setup(bot):
+    await bot.add_cog(Wisdoms(bot))
 
 
 class Wisdoms(commands.Cog):
@@ -38,7 +38,11 @@ class Wisdoms(commands.Cog):
             'I want to be alone',
             'I\'m sleeping',
             'I\'m not a tree',
-            'The channel name is daily wisdoms for a reason'
+            'I\'m not a rock',
+            'I\'m not a mountain',
+            'If you wish to make an apple pie from scratch, you must first invent the universe.',
+            'Any man that eats a peach is a fool.',
+            'I\'m not a peach',
         ]
 
         self.humility_proverbs = [
@@ -46,6 +50,8 @@ class Wisdoms(commands.Cog):
             'Humility is the mother of good luck.',
             'Humility is the mother of wisdom.',
             'Be like bamboo, the higher you grow the deeper you bow.',
+            'Humility is the foundation of all virtues.',
+            'Arrogance is like a mountain, humility is like a valley.',
             'Arrogance is the enemy of humility.',
             'Arrogance invites danger, humility avoids it.',
             'Through giving thinks, you are given wisdom.',
@@ -53,9 +59,14 @@ class Wisdoms(commands.Cog):
             'Are you feeling lucky, punk?',
             'The more you give, the more you get.',
             'The person who gives the most is the one who receives the most.',
+            'Dropping a pebble in the water causes ripples to spread in all directions.',
+            'I\'m going to make him an offer he can\'t refuse.',
             'Of all the gin joints in all the towns in all the world, she walks into mine.',
             'You talkin\' to me?',
-            'What we\'ve got here is failure to communicate.'
+            'What we\'ve got here is failure to communicate.',
+            'If you\'re going to be rude, at least be funny.',
+            'I\'m not a tree',
+            'I\'m not a rock',
         ]
 
         self.user_thanked = {}

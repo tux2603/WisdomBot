@@ -3,29 +3,33 @@ import os
 
 import discord
 from discord.ext import commands
-from discord_components import DiscordComponents
 from dotenv import load_dotenv
 from Cogs import *
+import asyncio
 
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-bot = commands.Bot(command_prefix='ඞ')
+client = commands.Bot(intents=discord.Intents.all(), command_prefix='ඞ')
 
 
-@bot.event
+@client.event
 async def on_ready():
-    print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
+    print(f'\n\nLogged in as: {client.user.name} - {client.user.id}\nVersion: {discord.__version__}\n')
 
-    DiscordComponents(bot)
+async def main():
+    async with client:
+        for file in os.listdir('Cogs'):
+            if not file.startswith('__') and file.endswith('.py'):
+                try:
+                    print(f'Loading extension {file[:-3]}')
+                    await client.load_extension(f'Cogs.{file[:-3]}')
+                    print('  ...Done')
+                except commands.errors.NoEntryPointError:
+                    print(f'  ...Failed to load extension {file[:-3]}')
 
+        await client.start(TOKEN)
 
 if __name__ == '__main__':
     print('Starting bot')
-    for file in os.listdir('Cogs'):
-        if not file.startswith('__') and file.endswith('.py'):
-            try:
-                bot.load_extension(f'Cogs.{file[:-3]}')
-            except commands.errors.NoEntryPointError:
-                pass
-    bot.run(TOKEN)
+    asyncio.run(main())
