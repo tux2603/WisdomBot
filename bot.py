@@ -6,12 +6,23 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from Cogs import *
 import asyncio
+import sys
+from getopt import getopt
 
+# Get command line arguments
+opts, args = getopt(sys.argv[1:], '', ['beta'])
+flags = [opt[0] for opt in opts if not opt[1]]
 
+# Load environment variables
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-bot = commands.Bot(intents=discord.Intents.all(), command_prefix='ඞ')
 
+# Set up bot
+if '--beta' in flags:
+    TOKEN = os.getenv('DISCORD_BETA_TOKEN')
+    bot = commands.Bot(intents=discord.Intents.all(), command_prefix='-')
+else:
+    TOKEN = os.getenv('DISCORD_TOKEN')
+    bot = commands.Bot(intents=discord.Intents.all(), command_prefix='ඞ')
 
 @bot.event
 async def on_ready():
@@ -31,5 +42,9 @@ async def main():
         await bot.start(TOKEN)
 
 if __name__ == '__main__':
-    print('Starting bot')
+    if '--beta' in flags:
+        print('Starting bot in beta testing mode (prefix: -)')
+    else:
+        print('Starting bot in production mode (prefix: ඞ)')
+        
     asyncio.run(main())

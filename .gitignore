@@ -2,3 +2,4 @@
 .env
 voting.yml
 .vscode/settings.json
+data/
