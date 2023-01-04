@@ -8,6 +8,7 @@ from Cogs import *
 import asyncio
 import sys
 from getopt import getopt
+from typing import Literal
 
 # Get command line arguments
 opts, args = getopt(sys.argv[1:], '', ['beta'])
@@ -25,9 +26,40 @@ else:
     bot = commands.Bot(intents=discord.Intents.all(), command_prefix='ඞ')
 
 @bot.event
-async def on_ready():
+async def on_ready():    
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over the world from my sanctuary in the clouds"))
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def sync(ctx, *, mode: Literal['copy', 'nocopy', 'clear'] = 'nocopy'):
+    try:
+        await ctx.send('Syncing...')
+        # Sync things globally
+        synced_commands = await ctx.bot.tree.sync()
+        await ctx.send(f'Synced {len(synced_commands)} commands globally')
+
+        # Copy command tree to each guild
+        if mode == 'copy':
+            for guild in ctx.bot.guilds:
+                ctx.bot.tree.clear_commands(guild=ctx.guild)
+                ctx.bot.tree.copy_global_to(guild=ctx.guild)
+
+        if mode == 'clear':
+            for guild in ctx.bot.guilds:
+                ctx.bot.tree.clear_commands(guild=ctx.guild)
+
+        # Sync things locally
+        for guild in ctx.bot.guilds:
+            commands_synced = await ctx.bot.tree.sync(guild=ctx.guild)
+            await ctx.send(f'Synced {len(commands_synced)} commands with guild {guild.name}')
+
+        await ctx.send('Sync complete')
+    except Exception as e:
+        print(e)
+
+
+
 
 async def main():
     async with bot:
@@ -46,5 +78,5 @@ if __name__ == '__main__':
         print('Starting bot in beta testing mode (prefix: -)')
     else:
         print('Starting bot in production mode (prefix: ඞ)')
-        
+
     asyncio.run(main())
