@@ -8,16 +8,16 @@ async def setup(bot):
     await bot.add_cog(CogManagement(bot))
 
 
-class CogManagement(commands.GroupCog, name='cog-management', description='Commands to manage cogs. Don\'t unload the cog-management cog!'):
+class CogManagement(commands.Cog):
     # TODO: See if there's any way to use the autocomplete feature for the cog names
     def __init__(self, bot):
         self.bot = bot
 
 
-    @app_commands.command(name='reload', description='Reloads a cog')
+    @app_commands.command(name='reload-cog', description='Reloads a cog')
     @app_commands.default_permissions(administrator=True)
     async def reload_cog(self, interaction: Interaction, cog_name: str) -> None:
-        await interaction.response.send_message(f'Reloading cog {cog_name}...')
+        await interaction.response.send_message(f'Reloading cog {cog_name}...', ephemeral=True)
 
         # Check if the cog exists
         if not os.path.exists(os.path.join('Cogs', f'{cog_name}.py')):
@@ -32,10 +32,10 @@ class CogManagement(commands.GroupCog, name='cog-management', description='Comma
             await interaction.edit_original_response(content=f'Error reloading cog {cog_name}: {e}')
 
 
-    @app_commands.command(name='load', description='Loads a cog')
+    @app_commands.command(name='load-cog', description='Loads a cog')
     @app_commands.default_permissions(administrator=True)
     async def load_cog(self, interaction: Interaction, cog_name: str) -> None:
-        await interaction.response.send_message(f'Loading cog {cog_name}...')
+        await interaction.response.send_message(f'Loading cog {cog_name}...', ephemeral=True)
 
         # Check if the cog exists
         if not os.path.exists(os.path.join('Cogs', f'{cog_name}.py')):
@@ -50,10 +50,10 @@ class CogManagement(commands.GroupCog, name='cog-management', description='Comma
             await interaction.edit_original_response(content=f'Error loading cog {cog_name}: {e}')
 
     
-    @app_commands.command(name='unload', description='Unloads a cog')
+    @app_commands.command(name='unload-cog', description='Unloads a cog. Don\'t unload the cog management cog!')
     @app_commands.default_permissions(administrator=True)
     async def unload_cog(self, interaction: Interaction, cog_name: str) -> None:
-        await interaction.response.send_message(f'Unloading cog {cog_name}...')
+        await interaction.response.send_message(f'Unloading cog {cog_name}...', ephemeral=True)
 
         # Check if the cog exists
         if not os.path.exists(os.path.join('Cogs', f'{cog_name}.py')):

@@ -1,5 +1,6 @@
 */__pycache__/
 .env
 voting.yml
-.vscode/settings.json
+.vscode/
 data/
+game_nights/

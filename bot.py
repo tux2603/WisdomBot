@@ -42,21 +42,28 @@ async def sync(ctx, *, mode: Literal['copy', 'nocopy', 'clear'] = 'nocopy'):
         # Copy command tree to each guild
         if mode == 'copy':
             for guild in ctx.bot.guilds:
-                ctx.bot.tree.clear_commands(guild=ctx.guild)
-                ctx.bot.tree.copy_global_to(guild=ctx.guild)
+                ctx.bot.tree.copy_global_to(guild=guild)
+                ctx.bot.tree.clear_commands(guild=guild)
 
         if mode == 'clear':
             for guild in ctx.bot.guilds:
-                ctx.bot.tree.clear_commands(guild=ctx.guild)
+                ctx.bot.tree.clear_commands(guild=guild)
 
         # Sync things locally
         for guild in ctx.bot.guilds:
-            commands_synced = await ctx.bot.tree.sync(guild=ctx.guild)
+            await ctx.send(f'Attempting sync with with guild {guild.name}')
+            commands_synced = await ctx.bot.tree.sync(guild=guild)
             await ctx.send(f'Synced {len(commands_synced)} commands with guild {guild.name}')
 
         await ctx.send('Sync complete')
     except Exception as e:
         print(e)
+        
+        # print the stack trace
+        import traceback
+        traceback.print_exc()
+
+        await ctx.send('Sync failed')
 
 
 
