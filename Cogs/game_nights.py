@@ -334,31 +334,27 @@ class GameNights(commands.Cog):
 
     @admin_group.command(name='trigger-vote', description='Manually triggers a vote for the next game night')
     async def trigger_vote(self, interaction: Interaction) -> None:
-        try:
-            ''' Manually a vote for the next game night '''
-            if interaction.guild_id not in self._settings:
-                await self._send_uninitialized_error(interaction)
-                return
+        ''' Manually a vote for the next game night '''
+        if interaction.guild_id not in self._settings:
+            await self._send_uninitialized_error(interaction)
+            return
 
-            # Get the channel ID for the vote channel
-            vote_channel_id = self._settings[interaction.guild.id].vote_channel_id
-            if vote_channel_id is None:
-                vote_channel_id = self._settings[interaction.guild.id].announcement_channel_id
-            vote_channel = interaction.guild.get_channel(vote_channel_id)
+        # Get the channel ID for the vote channel
+        vote_channel_id = self._settings[interaction.guild.id].vote_channel_id
+        if vote_channel_id is None:
+            vote_channel_id = self._settings[interaction.guild.id].announcement_channel_id
+        vote_channel = interaction.guild.get_channel(vote_channel_id)
 
-            # Get the role ID for the vote role
-            vote_role_id = self._settings[interaction.guild.id].vote_role_id
-            vote_role = interaction.guild.get_role(vote_role_id)
+        # Get the role ID for the vote role
+        vote_role_id = self._settings[interaction.guild.id].vote_role_id
+        vote_role = interaction.guild.get_role(vote_role_id)
 
-            suggestions = self._suggestions[interaction.guild.id]
-            max_votes = self._settings[interaction.guild.id].max_votes
+        suggestions = self._suggestions[interaction.guild.id]
+        max_votes = self._settings[interaction.guild.id].max_votes
 
-            await self._create_vote(vote_channel, vote_role, suggestions, max_votes)
+        await self._create_vote(vote_channel, vote_role, suggestions, max_votes)
 
-            await interaction.response.send_message('Vote triggered', ephemeral=True)
-        except Exception as e:
-            print(e)
-            await interaction.response.send_message('Error', ephemeral=True)
+        await interaction.response.send_message('Vote triggered', ephemeral=True)
 
 
 
